@@ -34,7 +34,13 @@ wss.on("connection", function(ws) {
 
       ws.on('message', function incoming(data) {
           console.log(data);
-          message = JSON.parse(data);
+
+          try {
+            message = JSON.parse(data);
+          } catch (e) {
+            console.log("Exception: "+e);
+            return;
+          }
 
           if ( ! "type" in message) {
              return;

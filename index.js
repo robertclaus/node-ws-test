@@ -87,7 +87,7 @@ wss.on("connection", function(ws) {
             }
           }
 
-          if ( message.type == 'echo') {
+          if ( message.type == 'echo' || message.type == "wireList") {
             for( var i=0; i<all_connections.length; i++){
                 all_connections[i].send(data);
             }

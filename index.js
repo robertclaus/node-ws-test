@@ -51,15 +51,25 @@ wss.on("connection", function(ws) {
           }
 
           if ( message.type == 'addWire' ||
-               message.type == 'removeWire' ||
-               message.type == 'listWires' ||
-               message.type == 'clearWires') {
+               message.type == 'removeWire') {
             for( var i=0; i<all_connections.length; i++){
                 if (! "destination" in message || ! "receiver" in message) { return;}
                 if (! "device_id" in message.destination || ! "device_id" in message.receiver) { return;}
 
                 if (message.destination.device_id == all_connections[i].id ||
                     message.receiver.device_id == all_connections[i].id) {
+                    all_connections[i].send(data);
+                }
+
+            }
+          }
+
+          if ( message.type == 'listWires' ||
+               message.type == 'clearWires') {
+            for( var i=0; i<all_connections.length; i++){
+                if (! "target" in message) { return;}
+
+                if (message.target == all_connections[i].id) {
                     all_connections[i].send(data);
                 }
 

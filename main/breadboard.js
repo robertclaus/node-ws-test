@@ -1,7 +1,7 @@
 // Assumed variables: ctx, mouse_x, mouse_y, websocketurl, draw_all
 
 function Breadboard(id, x_start, y_start) {
-    this.image= "breadboard.png";
+    this.image= "Breadboard.png";
     this.width = 100;
     this.height = 360;
     this.pins = [

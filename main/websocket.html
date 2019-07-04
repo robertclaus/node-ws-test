@@ -4,28 +4,42 @@
 
 <title>WebSocket Test</title>
 
-<div id="output"></div>
+<button onclick="toggleDebugger()">Debugger</button>
 
-<form name="myform">
-<p>
-<textarea name="outputtext" rows="20" cols="50"></textarea>
-</p>
-<p>
-<textarea name="inputtext" cols="50"></textarea>
-</p>
-<p>
-<textarea name="url" cols="50"></textarea>
-</p>
-<p>
-<input type="button" name=sendButton value="Send" onClick="sendText();">
-<input type="button" name=clearButton value="Clear" onClick="clearText();">
-<input type="button" name=disconnectButton value="Disconnect" onClick="doDisconnect();">
-<input type="button" name=connectButton value="Connect" onClick="doConnect();">
-</p>
+<script>
+    function toggleDebugger() {
+  var x = document.getElementById("debugger");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+</script>
+
+<div id="debugger" style="display:none">
+    <div id="output"></div>
+
+    <form name="myform">
+    <p>
+    <textarea name="outputtext" rows="20" cols="50"></textarea>
+    </p>
+    <p>
+    <textarea name="inputtext" cols="50"></textarea>
+    </p>
+    <p>
+    <textarea name="url" cols="50"></textarea>
+    </p>
+    <p>
+    <input type="button" name=sendButton value="Send" onClick="sendText();">
+    <input type="button" name=clearButton value="Clear" onClick="clearText();">
+    <input type="button" name=disconnectButton value="Disconnect" onClick="doDisconnect();">
+    <input type="button" name=connectButton value="Connect" onClick="doConnect();">
+    </p>
 
 
-</form>
-
+    </form>
+</div>
 
 <style>
     .pins {

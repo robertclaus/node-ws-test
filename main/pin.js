@@ -1,9 +1,10 @@
 // Assumed variables: ctx, mouse_x, mouse_y, selected_pin, pin_radius
 
-function Pin(device_id, pin_id, x, y) {
+function Pin(device_id, pin_id, x, y, active=true) {
     this.device_id = device_id;
     this.pin_id = pin_id;
     this.set_color = "white";
+    this.active = active;
 
     this.value = 0;
 
@@ -32,7 +33,8 @@ function Pin(device_id, pin_id, x, y) {
     }
 
     this.draw = function(parent_x, parent_y) {
-        if (this.selected) {this.color = "blue";}
+        if (!this.active) {this.color = "grey";}
+        else if (this.selected) {this.color = "blue";}
         else if (this.hover) {this.color = "green";}
 		else {this.color = this.set_color;}
 

@@ -130,8 +130,9 @@ function DraggableVirtualDevice(id, image, x_start, y_start, width, height, pins
     this.on_click_fn = on_click_fn;
 
     this.draw_fn = function() {
-		this.img = new Image;
+		this.img = new Image();
 		this.img.src = this.image;
+
 		device = this;
 		this.img.onload = function () {
 			ctx.drawImage(device.img, device.current_x, device.current_y, device.w, device.h);

@@ -1,6 +1,21 @@
 //Assumes: websocketurl
 
+var canvas = document.querySelector("canvas");
+var ctx = canvas.getContext("2d");
+ctx.lineWidth = 5;
+var circles = [];
+
 function init() {
+virtual_devices = [
+        new VirtualLED("TestA", 850, 200),
+        new VirtualLED("TestB", 850, 100),
+        new Battery("TestC", 630, 100),
+        new Breadboard("A", 500,80),
+        new VirtualDisplay("TestD", 400,300)
+        //new Breadboard("B", 700,80)
+];
+
+
 	document.myform.url.value = websocketurl;
 	document.myform.inputtext.value = "Hello World!"
 	document.myform.disconnectButton.disabled = true;
@@ -9,13 +24,7 @@ function init() {
 }
 
 var virtual_devices = [];
-virtual_devices = [
-        new VirtualLED("TestA", 850, 200),
-        new VirtualLED("TestB", 850, 100),
-        new Battery("TestC", 630, 100),
-        new Breadboard("A", 500,80),
-        //new Breadboard("B", 700,80)
-];
+
 
 function doConnect() {
 	websocket = new WebSocket(document.myform.url.value);
@@ -91,10 +100,7 @@ function doDisconnect() {
 
 
 
-var canvas = document.querySelector("canvas");
-var ctx = canvas.getContext("2d");
-ctx.lineWidth = 5;
-var circles = [];
+
 
 function draw_all() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);

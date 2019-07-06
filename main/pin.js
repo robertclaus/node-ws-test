@@ -1,10 +1,11 @@
 // Assumed variables: ctx, mouse_x, mouse_y, selected_pin, pin_radius
 
-function Pin(device_id, pin_id, x, y, active=true) {
+function Pin(device_id, pin_id, x, y, active=true, preferred_connection_type="digital") {
     this.device_id = device_id;
     this.pin_id = pin_id;
     this.set_color = "white";
     this.active = active;
+    this.preferred_connection_type = preferred_connection_type;
 
     this.value = 0;
 
@@ -54,14 +55,20 @@ function Pin(device_id, pin_id, x, y, active=true) {
 		    console.log("clicked pin");
 		    if (selected_pin != null && !this.selected) {
                 console.log("Connected " + this.device_id + " to " + selected_pin.device_id);
-                connections.push(new Connection(selected_pin, this));
+                connections.push(new Connection(selected_pin, this, connectionType));
                 selected_pin.selected = false;
                 selected_pin = null;
                 this.selected = false;
+
             } else {
                 console.log("Selected " + this.pin_id);
                 selected_pin = this;
                 this.selected = true;
+                console.log("Conn "+this.preferred_connection_type);
+                if(this.preferred_connection_type != "None") {
+                    console.log("setting");
+                    setConnectionType(this.preferred_connection_type);
+                }
             }
 		}
     };

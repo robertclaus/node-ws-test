@@ -5,7 +5,7 @@ function Breadboard(id, x_start, y_start) {
     this.width = 100;
     this.height = 360;
     this.pins = [
-        new Pin(id, 0, 20, 20, false),
+        new Pin(id, 17, 20, 20, true, preferred_connection_type="analog"),
         new Pin(id, 0, 20, 40, false),
         new Pin(id, 0, 20, 60, false),
         new Pin(id, 0, 20, 80, false),

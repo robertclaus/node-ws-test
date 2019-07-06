@@ -6,6 +6,17 @@
 
 <button onclick="toggleDebugger()">Debugger</button>
 
+<select id="wireType" onchange="selectWireType()">
+  <option value="analog">Analog</option>
+  <option value="digital" selected>Digital</option>
+</select>
+
+<script>
+function selectWireType() {
+  connectionType = document.getElementById("wireType").value;
+}
+</script>
+
 <script>
     function toggleDebugger() {
   var x = document.getElementById("debugger");

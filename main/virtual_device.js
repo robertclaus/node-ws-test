@@ -63,7 +63,7 @@ function VirtualDevice(id, draw_fn, on_click_fn, on_mouse_move_fn, on_mouse_down
 	};
 
 	this.websocket.onopen = function (evt) {
-        this.sendMessage("Connected virtual device\n");
+        this.log("Connected virtual device\n");
         message = {
                 "type": "whoami",
                 "iam": this.id
@@ -77,7 +77,7 @@ function VirtualDevice(id, draw_fn, on_click_fn, on_mouse_move_fn, on_mouse_down
 	}.bind(this);
 
 	this.websocket.onmessage = function (evt) {
-	    this.sendMessage("Message");
+	    this.log("Message");
 	    message = JSON.parse(evt.data);
 	    if (message.type == "data") {
 	        var relevant_pin = null;
@@ -107,7 +107,7 @@ function VirtualDevice(id, draw_fn, on_click_fn, on_mouse_move_fn, on_mouse_down
 	}.bind(this);
 }
 
-function DraggableVirtualDevice(id, image, x_start, y_start, width, height, pins, on_value_change, on_click_fn) {
+function DraggableVirtualDevice(id, image, x_start, y_start, width, height, pins, on_value_change, on_click_fn, on_draw_fn=function(){}) {
     this.image = image;
     this.w = width;
     this.h = height;
@@ -118,6 +118,7 @@ function DraggableVirtualDevice(id, image, x_start, y_start, width, height, pins
     this.drag_start_x = 0;
     this.drag_start_y = 0;
     this.is_dragged = false;
+    this.draggable_draw_fn = on_draw_fn;
 
     for(var i = 0; i< this.pins.length; i++) {
         this.pins[i].set_parent_offset(this.current_x, this.current_y);
@@ -137,6 +138,8 @@ function DraggableVirtualDevice(id, image, x_start, y_start, width, height, pins
 		this.img.onload = function () {
 			ctx.drawImage(device.img, device.current_x, device.current_y, device.w, device.h);
 		}(device);
+
+		this.draggable_draw_fn();
     };
 
     this.on_mouse_move_fn = function() {
@@ -198,6 +201,31 @@ function VirtualLED(id, x_start, y_start) {
 
     DraggableVirtualDevice.call(this, id, this.image_on, x_start, y_start, this.width, this.height, this.pins, this.on_value_change, this.on_click_fn);
 }
+
+
+function VirtualDisplay(id, x_start, y_start) {
+    this.img = "Breadboard.png";
+    this.width = 80;
+    this.height = 30;
+    this.pins = [
+        new Pin(id, 2, 0, 10)
+    ];
+    this.value = 0;
+
+    this.on_value_change = function () {
+        this.value = this.pins[0].get_value();
+    }
+
+    this.on_click_fn = function () {}
+
+    var on_draw_fn = function() {
+        ctx.font = "15px Arial";
+        ctx.fillText(this.value, this.current_x+35, this.current_y+20);
+    };
+
+    DraggableVirtualDevice.call(this, id, this.img, x_start, y_start, this.width, this.height, this.pins, this.on_value_change, this.on_click_fn, on_draw_fn);
+}
+
 
 function Battery(id, x_start, y_start) {
     this.id = id;

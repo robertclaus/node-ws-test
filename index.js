@@ -21,7 +21,9 @@ function check_header(req, res) {
     return true;
 }
 
+
 app.use('/static', express.static(__dirname + "/"))
+
 
 app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
     if(!check_header(req, res)) {return;}
@@ -44,18 +46,19 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
                 {
                 "meta": {"key":"1", "id":"1", "timestamp":"12346"},
                 "recieved_data": {"created_at":"12345", "value":"0"}
-                },
+                }
              ]
         };
 
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
-    } catch (e) {
+    }/* catch (e) {
         var response = {"errors": ["Bad trigger."]};
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
-    }
+    }*/
 });
+
 
 app.post('/ifttt/v1/actions/send_data', function (req, res) {
     if(!check_header(req, res)) {return;}
@@ -76,11 +79,11 @@ app.post('/ifttt/v1/actions/send_data', function (req, res) {
 
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
-    } catch (e) {
+    }/* catch (e) {
         var response = {"errors": ["Bad action."]};
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
-    }
+    }*/
 });
 
 
@@ -89,7 +92,7 @@ app.get('/ifttt/v1/status', function (req, res) {
     res.send("Live");
 });
 
-//http://roberts-websocket.herokuapp.com/ifttt/v1/test/setup
+
 app.post('/ifttt/v1/test/setup', function (req, res) {
     if(!check_header(req, res)) {return;}
     var test_setup = {
@@ -120,6 +123,19 @@ app.post('/ifttt/v1/test/setup', function (req, res) {
     res.set({ 'content-type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(test_setup));
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 var server = http.createServer(app)
 server.listen(port)

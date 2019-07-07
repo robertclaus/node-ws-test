@@ -11,7 +11,7 @@ function check_header(req, res) {
     key = '58b4jY9RLuqg6PFAn6D1QmIO7MP0tm8LOoI7QFHX1VOPAgGrDbqOcUVXIgEEnaBc';
 
     if(service != key || header !=key) {
-        res.statusCode = 500;
+        res.statusCode = 401;
         res.send("Bad headers");
         return false;
     }
@@ -32,7 +32,7 @@ app.get('/ifttt/v1/status', function (req, res) {
 });
 
 //http://roberts-websocket.herokuapp.com/ifttt/v1/test/setup
-app.get('/ifttt/v1/test/setup', function (req, res) {
+app.post('/ifttt/v1/test/setup', function (req, res) {
     if(!check_header(req, res)) {return;}
     var test_setup = {
           "data": {

@@ -12,7 +12,9 @@ function check_header(req, res) {
 
     if(service != key || header !=key) {
         res.statusCode = 401;
-        res.send("Bad headers");
+        res.set({ 'content-type': 'application/json; charset=utf-8' });
+        response = {"errors":["Invalid service or channel key."]};
+        res.send(JSON.stringify(response));
         return false;
     }
 
@@ -23,14 +25,62 @@ app.use('/static', express.static(__dirname + "/"))
 
 app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
     if(!check_header(req, res)) {return;}
-    res.set({ 'content-type': 'application/json; charset=utf-8' });
-    res.send('Test');
+    try {
+        var data = JSON.parse(req.data);
+
+        var device_id = data.actionFields.ifttt_device_id;
+        var data_value = data.actionFields.data_value;
+
+        var response = {
+             "data": [
+                {
+                "meta": {"key":"1", "id":"1", "timestamp":"12342"},
+                "recieved_data": {"created_at":"12341", "value":"0"}
+                },
+                {
+                "meta": {"key":"1", "id":"1", "timestamp":"12344"},
+                "recieved_data": {"created_at":"12343", "value":"0"}
+                },
+                {
+                "meta": {"key":"1", "id":"1", "timestamp":"12346"},
+                "recieved_data": {"created_at":"12345", "value":"0"}
+                },
+             ]
+        };
+
+        res.set({ 'content-type': 'application/json; charset=utf-8' });
+        res.send(JSON.stringify(response));
+    } catch (e) {
+        var response = {"errors": ["Bad trigger."]};
+        res.set({ 'content-type': 'application/json; charset=utf-8' });
+        res.send(JSON.stringify(response));
+    }
 });
 
 app.post('/ifttt/v1/actions/send_data', function (req, res) {
     if(!check_header(req, res)) {return;}
-    res.set({ 'content-type': 'application/json; charset=utf-8' });
-    res.send('Test');
+
+    try {
+        var data = JSON.parse(req.data);
+
+        var device_id = data.actionFields.ifttt_device_id;
+        var data_value = data.actionFields.data_value;
+
+        var response = {
+             "data": [
+                {
+                "id":"1"
+                }
+             ]
+        };
+
+        res.set({ 'content-type': 'application/json; charset=utf-8' });
+        res.send(JSON.stringify(response));
+    } catch (e) {
+        var response = {"errors": ["Bad action."]};
+        res.set({ 'content-type': 'application/json; charset=utf-8' });
+        res.send(JSON.stringify(response));
+    }
 });
 
 

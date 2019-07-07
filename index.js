@@ -21,10 +21,18 @@ function check_header(req, res) {
 
 app.use('/static', express.static(__dirname + "/"))
 
-app.get('/ifttt/v1/triggers/data', function (req, res) {
+app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
     if(!check_header(req, res)) {return;}
+    res.set({ 'content-type': 'application/json; charset=utf-8' });
     res.send('Test');
 });
+
+app.post('/ifttt/v1/actions/send_data', function (req, res) {
+    if(!check_header(req, res)) {return;}
+    res.set({ 'content-type': 'application/json; charset=utf-8' });
+    res.send('Test');
+});
+
 
 app.get('/ifttt/v1/status', function (req, res) {
     if(!check_header(req, res)) {return;}

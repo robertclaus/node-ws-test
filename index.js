@@ -57,8 +57,9 @@ app.post('/ifttt/v1/test/setup', function (req, res) {
             }
           }
         };
-    res.charset = 'utf-8';
-    res.setHeader('Content-Type', 'application/json');
+    //res.charset = 'utf-8';
+    //res.setHeader('Content-Type', 'application/json');
+    res.set({ 'content-type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(test_setup));
 });
 

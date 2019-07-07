@@ -5,7 +5,60 @@ var app = express()
 const uuidv1 = require('uuid/v1');
 var port = process.env.PORT || 5000
 
-app.use(express.static(__dirname + "/"))
+function check_header(req, res) {
+    service = req.get('IFTTT-Channel-Key');
+    header = req.get('IFTTT-Service-Key');
+    key = '58b4jY9RLuqg6PFAn6D1QmIO7MP0tm8LOoI7QFHX1VOPAgGrDbqOcUVXIgEEnaBc';
+
+    if(service != key || header !=key) {
+        res.statusCode = 500;
+        res.send("Bad headers");
+    }
+
+    return false;
+}
+
+app.use('/static', express.static(__dirname + "/"))
+
+app.get('/ifttt/v1/triggers/data', function (req, res) {
+    if(!check_header(req, res)) {return;}
+    res.send('Test');
+});
+
+app.get('/ifttt/v1/status', function (req, res) {
+    if(!check_header(req, res)) {return;}
+    res.send("Live");
+});
+
+//http://roberts-websocket.herokuapp.com/ifttt/v1/test/setup
+app.get('/ifttt/v1/test/setup', function (req, res) {
+    if(!check_header(req, res)) {return;}
+    var test_setup = {
+          "data": {
+            "samples": {
+              "triggers": {
+                "receive_data": {
+                  "ifttt_device_id": "I1"
+                }
+              },
+              "actions": {
+                "send_data": {
+                  "ifttt_device_id": "I2",
+                  "data_value": "0"
+                }
+              },
+              "actionRecordSkipping": {
+                "send_data": {
+                  "ifttt_device_id": "I3",
+                  "data_value": "0"
+                }
+              }
+            }
+          }
+        };
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(test_setup));
+});
 
 var server = http.createServer(app)
 server.listen(port)

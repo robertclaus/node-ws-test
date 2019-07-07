@@ -35,6 +35,7 @@ function doConnect() {
 	};
 	websocket.onclose = function (evt) {
 		onClose(evt)
+		doConnect();
 	};
 	websocket.onmessage = function (evt) {
 		onMessage(evt)

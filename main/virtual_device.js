@@ -2,7 +2,7 @@
 
 function VirtualDevice(id, draw_fn, on_click_fn, on_mouse_move_fn, on_mouse_down_fn, on_mouse_up_fn, pins, on_value_change_fn) {
     this.id = id;
-    this.websocket = new WebSocket(websocketurl);
+
     this.pins = pins;
     this.draw_fn = draw_fn;
     this.on_click_fn = on_click_fn;
@@ -11,6 +11,8 @@ function VirtualDevice(id, draw_fn, on_click_fn, on_mouse_move_fn, on_mouse_down
     this.on_mouse_up_fn = on_mouse_up_fn;
     this.on_value_change_fn = on_value_change_fn;
     this.persists_schematic = false;
+
+
 
     this.get_pin = function(pin_id) {
         for (var i = 0; i<this.pins.length; i++) {
@@ -71,49 +73,56 @@ function VirtualDevice(id, draw_fn, on_click_fn, on_mouse_move_fn, on_mouse_down
         }
 	};
 
-	this.websocket.onopen = function (evt) {
-        this.log("Connected virtual device\n");
-        message = {
-                "type": "whoami",
-                "iam": this.id
-        };
-        this.sendMessage(JSON.stringify(message));
-	}.bind(this);
+	this.connect=function() {
+	    this.websocket = new WebSocket(websocketurl);
 
-	this.websocket.onclose = function (evt) {
-	    this.sendMessage("Closed");
-		console.log(evt);
-	}.bind(this);
+	    this.websocket.onopen = function (evt) {
+            this.log("Connected virtual device\n");
+            message = {
+                    "type": "whoami",
+                    "iam": this.id
+            };
+            this.sendMessage(JSON.stringify(message));
+	    }.bind(this);
 
-	this.websocket.onmessage = function (evt) {
-	    this.log("Message");
-	    message = JSON.parse(evt.data);
-	    if (message.type == "data") {
-	        var relevant_pin = null;
-	        if (message.receiver.device_id == this.id) {
-	            relevant_pin = message.receiver;
-	        }
-	        if (message.destination.device_id == this.id) {
-                relevant_pin = message.destination;
-	        }
+	    this.websocket.onclose = function (evt) {
+            this.sendMessage("Closed");
+            console.log(evt);
+            this.connect();
+        }.bind(this);
 
-	        if (relevant_pin != null) {
-	        	 for (var i = 0; i<this.pins.length; i++) {
-	                if (relevant_pin.pin_id == this.pins[i].pin_id) {
-	                    this.pins[i].set_value(message.payload);
-	                    this.on_value_change_fn();
-	                }
-	            }
-	        }
-	        draw_all();
-	    }
-		console.log(evt);
-	}.bind(this);
+        this.websocket.onmessage = function (evt) {
+            this.log("Message");
+            message = JSON.parse(evt.data);
+            if (message.type == "data") {
+                var relevant_pin = null;
+                if (message.receiver.device_id == this.id) {
+                    relevant_pin = message.receiver;
+                }
+                if (message.destination.device_id == this.id) {
+                    relevant_pin = message.destination;
+                }
 
-	this.websocket.onerror = function (evt) {
-	    this.sendMessage("Error");
-	    console.log(evt);
-	}.bind(this);
+                if (relevant_pin != null) {
+                     for (var i = 0; i<this.pins.length; i++) {
+                        if (relevant_pin.pin_id == this.pins[i].pin_id) {
+                            this.pins[i].set_value(message.payload);
+                            this.on_value_change_fn();
+                        }
+                    }
+                }
+                draw_all();
+            }
+            console.log(evt);
+        }.bind(this);
+
+        this.websocket.onerror = function (evt) {
+            this.sendMessage("Error");
+            console.log(evt);
+        }.bind(this);
+	}
+
+	this.connect();
 }
 
 function DraggableVirtualDevice(id, image, x_start, y_start, width, height, pins, on_value_change, on_click_fn, on_draw_fn=function(){}) {

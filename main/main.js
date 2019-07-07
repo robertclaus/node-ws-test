@@ -21,6 +21,7 @@ virtual_devices = [
 	document.myform.disconnectButton.disabled = true;
 	draw_all();
 	doConnect();
+
 }
 
 var virtual_devices = [];
@@ -48,6 +49,7 @@ function onOpen(evt) {
 	console.log(evt);
 	document.myform.connectButton.disabled = true;
 	document.myform.disconnectButton.disabled = false;
+	read_schematic();
 }
 
 function onClose(evt) {
@@ -58,6 +60,7 @@ function onClose(evt) {
 
 function onMessage(evt) {
 	writeToScreen("response: " + evt.data + '\n');
+	on_wire_list(evt.data);
 }
 
 function onError(evt) {
@@ -137,19 +140,46 @@ canvas.onmouseup = function (e) {
 	var v,i = 0; while (v = virtual_devices[i++]) {v.on_mouse_up();}
 }
 
-var waiting_on_schematic = 0;
-
 function read_schematic() {
 	connections = [];
 
-	for (var i = 0; i < devices.length; i++) {
-		message = {
-			"type": "listWires",
-			"target": devices[i].device_id
+	for (var i = 0; i < virtual_devices.length; i++) {
+	    if (virtual_devices[i].persists_schematic){
+            message = {
+                "type": "listWires",
+                "target": virtual_devices[i].id
+            };
+            doSend(JSON.stringify(message));
 		}
-		waiting_on_schematic++;
-		doSend(JSON.stringify(message));
 	}
+}
+
+function find_device(device_id) {
+    for (var i = 0; i< virtual_devices.length; i++) {
+        if (virtual_devices[i].id == device_id) {
+            return virtual_devices[i];
+        }
+    }
+    return null;
+}
+
+function on_wire_list(data) {
+    message = JSON.parse(data);
+    if (message.type == "wireList") {
+        for(var i=0; i<message.wires.length; i++){
+            var wire = message.wires[i];
+            var device_r_id = wire.receiver.device_id;
+            var device_d_id = wire.destination.device_id;
+            var pin_r_id = wire.receiver.pin_id;
+            var pin_d_id = wire.destination.pin_id;
+            var type = wire.dataType;
+
+            var pin_r = find_device(device_r_id).get_pin(pin_r_id);
+            var pin_d = find_device(device_d_id).get_pin(pin_d_id);
+
+            connections.push(new Connection(pin_r, pin_d, type));
+        }
+    }
 }
 
 function clear_schematic() {

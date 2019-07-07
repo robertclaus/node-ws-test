@@ -10,7 +10,16 @@ function VirtualDevice(id, draw_fn, on_click_fn, on_mouse_move_fn, on_mouse_down
     this.on_mouse_down_fn = on_mouse_down_fn;
     this.on_mouse_up_fn = on_mouse_up_fn;
     this.on_value_change_fn = on_value_change_fn;
+    this.persists_schematic = false;
 
+    this.get_pin = function(pin_id) {
+        for (var i = 0; i<this.pins.length; i++) {
+            if (pin_id == this.pins[i].pin_id) {
+                return this.pins[i];
+            }
+        }
+        return null;
+    }
 
     this.draw = function() {
         this.draw_fn();

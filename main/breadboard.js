@@ -47,4 +47,6 @@ function Breadboard(id, x_start, y_start) {
     this.on_click_fn = function () {}
 
     DraggableVirtualDevice.call(this, id, this.image, x_start, y_start, this.width, this.height, this.pins, this.on_value_change, this.on_click_fn);
+
+    this.persists_schematic = true;
 }

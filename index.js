@@ -52,11 +52,11 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
 
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
-    }/* catch (e) {
-        var response = {"errors": ["Bad trigger."]};
+    } catch (e) {
+        var response = {"errors": ["Bad trigger.", e]};
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
-    }*/
+    }
 });
 
 
@@ -79,11 +79,11 @@ app.post('/ifttt/v1/actions/send_data', function (req, res) {
 
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
-    }/* catch (e) {
-        var response = {"errors": ["Bad action."]};
+    } catch (e) {
+        var response = {"errors": ["Bad action.", e]};
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
-    }*/
+    }
 });
 
 

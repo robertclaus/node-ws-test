@@ -13,9 +13,10 @@ function check_header(req, res) {
     if(service != key || header !=key) {
         res.statusCode = 500;
         res.send("Bad headers");
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 app.use('/static', express.static(__dirname + "/"))

@@ -71,6 +71,13 @@ app.post('/ifttt/v1/actions/send_data', function (req, res) {
         console.log(req.body);
         var data = req.body;
 
+        if(data == undefined || data.actionFields == undefined || data.actionFields.ifttt_device_id == undefined || data.actionFields.data_value == undefined) {
+            res.statusCode = 400;
+            var response = {"errors": ["Missing Field."]};
+            res.set({ 'content-type': 'application/json; charset=utf-8' });
+            res.send(JSON.stringify(response));
+        }
+
         var device_id = data.actionFields.ifttt_device_id;
         var data_value = data.actionFields.data_value;
 

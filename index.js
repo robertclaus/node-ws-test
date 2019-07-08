@@ -16,7 +16,7 @@ function check_header(req, res) {
     if(service != key || header !=key) {
         res.statusCode = 401;
         res.set({ 'content-type': 'application/json; charset=utf-8' });
-        response = {"errors":[{"message":"IFTTT sent an OAuth2 access token that isn’t valid."]};
+        response = {"errors":[{"message":"IFTTT sent an OAuth2 access token that isn’t valid."}]};
         res.send(JSON.stringify(response));
         return false;
     }

@@ -1,4 +1,5 @@
 var WebSocketServer = require("ws").Server
+var WebSocket = require("ws")
 var http = require("http")
 var express = require("express")
 var bodyParser = require('body-parser')
@@ -7,6 +8,48 @@ app.use(bodyParser.json());
 
 const uuidv1 = require('uuid/v1');
 var port = process.env.PORT || 5000
+
+
+
+
+/**** IFTTT Device Handler ****/
+
+const url = 'ws://roberts-websocket.herokuapp.com:5000';
+const ifttt_connection = new WebSocket(url);
+
+var ifttt_data = [];
+
+ifttt_connection.onconnect = () => {console.log("Connected!");}
+ifttt_connection.onopen = () => { message = {"type": "whoami", "iam": "I1"}; ws.send(JSON.stringify(message)); }
+ifttt_connection.onerror = (error) => { console.log(`WebSocket error: ${error}`); }
+ifttt_connection.onmessage = (e) => {
+  console.log(e.data);
+  try {
+    var message = JSON.parse(e.data);
+  } catch (e) {
+    console.log("Exception: "+e);
+    return;
+  }
+
+  var date = new Date();
+  var date_string = date.toISOString();
+  var ts = Math.round((new Date()).getTime() / 1000);
+
+  var id = ifttt_data.length;
+  var value = message.payload;
+  var data = {
+        "meta": {"key":id, "id":id, "timestamp":ts},
+        "value":value,
+        "created_at":date_string
+  };
+}
+
+
+
+
+
+
+/**** IFTTT API Handlers ****/
 
 function check_header(req, res) {
     service = req.get('IFTTT-Channel-Key');
@@ -52,27 +95,29 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
             limit = data.limit;
         }
 
-        var response = {
-             "data": [
-                {
-                    "meta": {"key":"1", "id":"1", "timestamp":"123456"},
-                    "value":"0",
-                    "created_at":"2013-11-04T09:28:00Z"
-                },
-                {
-                    "meta": {"key":"2", "id":"2", "timestamp":"123455"},
-                    "value":"0",
-                    "created_at":"2013-11-04T09:26:00Z"
-                },
-                {
-                    "meta": {"key":"3", "id":"3", "timestamp":"123454"},
-                    "value":"0",
-                    "created_at":"2013-11-04T09:24:00Z"
-                }
-             ]
-        };
+        if(device_id == "TI1" || device_id == "TI2" || device_id == "TI3") {
+            var response = {
+                 "data": [
+                    {
+                        "meta": {"key":"1", "id":"1", "timestamp":"123456"},
+                        "value":"0",
+                        "created_at":"2013-11-04T09:28:00Z"
+                    },
+                    {
+                        "meta": {"key":"2", "id":"2", "timestamp":"123455"},
+                        "value":"0",
+                        "created_at":"2013-11-04T09:26:00Z"
+                    },
+                    {
+                        "meta": {"key":"3", "id":"3", "timestamp":"123454"},
+                        "value":"0",
+                        "created_at":"2013-11-04T09:24:00Z"
+                    }
+                 ]
+            };
 
-        response.data.splice(0,3-limit);
+            response.data.splice(0,3-limit);
+        }
 
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
@@ -143,18 +188,18 @@ app.post('/ifttt/v1/test/setup', function (req, res) {
             "samples": {
               "triggers": {
                 "receive_data": {
-                  "ifttt_device_id": "I1"
+                  "ifttt_device_id": "TI1"
                 }
               },
               "actions": {
                 "send_data": {
-                  "ifttt_device_id": "I2",
+                  "ifttt_device_id": "TI2",
                   "data_value": "0"
                 }
               },
               "actionRecordSkipping": {
                 "send_data": {
-                  "ifttt_device_id": "I3",
+                  "ifttt_device_id": "TI3",
                   "data_value": "0"
                 }
               }
@@ -179,6 +224,8 @@ app.post('/ifttt/v1/test/setup', function (req, res) {
 
 
 
+
+/**** Websocket Server ****/
 
 var server = http.createServer(app)
 server.listen(port)

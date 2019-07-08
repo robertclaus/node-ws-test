@@ -19,7 +19,6 @@ const ifttt_connection = new WebSocket(url);
 
 var ifttt_data = [];
 
-ifttt_connection.onconnect = () => {console.log("Connected!");}
 ifttt_connection.onopen = () => { message = {"type": "whoami", "iam": "I1"}; ws.send(JSON.stringify(message)); }
 ifttt_connection.onerror = (error) => { console.log(`WebSocket error: ${error}`); }
 ifttt_connection.onmessage = (e) => {

@@ -20,7 +20,7 @@ const ifttt_connection = new WebSocket(url);
 var ifttt_data = [];
 
 ifttt_connection.onopen = function() { message = {"type": "whoami", "iam": "I1"}; ws.send(JSON.stringify(message)); }
-ifttt_connection.onerror = function(error) { console.log(`WebSocket error: ${error}`); }
+ifttt_connection.onerror = function(error) { console.log('WebSocket error: ${error}'); }
 ifttt_connection.onmessage = function(e) {
   console.log(e.data);
   try {

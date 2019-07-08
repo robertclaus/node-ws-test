@@ -16,7 +16,7 @@ function check_header(req, res) {
     if(service != key || header !=key) {
         res.statusCode = 401;
         res.set({ 'content-type': 'application/json; charset=utf-8' });
-        response = {"errors":["Invalid service or channel key."]};
+        response = {"errors":[{"message":"IFTTT sent an OAuth2 access token that isn’t valid."]};
         res.send(JSON.stringify(response));
         return false;
     }
@@ -73,10 +73,18 @@ app.post('/ifttt/v1/actions/send_data', function (req, res) {
 
         if(data == undefined || data.actionFields == undefined || data.actionFields.ifttt_device_id == undefined || data.actionFields.data_value == undefined) {
             res.statusCode = 400;
-            var response = {"errors": ["Missing Field."]};
+            var response = {"errors": [{"message":"Missing Field."}]};
             res.set({ 'content-type': 'application/json; charset=utf-8' });
             res.send(JSON.stringify(response));
         }
+
+        if(data.actionFields.ifttt_device_id == "I3") {
+            res.statusCode = 400;
+            var response = {"errors": [{"status":"SKIP", "message":"Missing record referred to."}]};
+            res.set({ 'content-type': 'application/json; charset=utf-8' });
+            res.send(JSON.stringify(response));
+        }
+
 
         var device_id = data.actionFields.ifttt_device_id;
         var data_value = data.actionFields.data_value;

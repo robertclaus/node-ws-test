@@ -14,17 +14,19 @@ var port = process.env.PORT || 5000
 
 /**** IFTTT Device Handler ****/
 
-const url = 'ws://roberts-websocket.herokuapp.com:5000';
-const ifttt_connection = new WebSocket(url);
+var url = "ws://roberts-websocket.herokuapp.com";
+var ws = new WebSocket(url);
 
 var ifttt_data = [];
 
-ifttt_connection.onopen = function() { console.log("connected"); message = {"type": "whoami", "iam": "I1"}; ifttt_connection.send(JSON.stringify(message)); }
-ifttt_connection.onerror = function(error) { console.log('WebSocket error: ${error}'); }
-ifttt_connection.onmessage = function(e) {
-  console.log(e.data);
+ws.on('open', function open() {
+    console.log("connected"); message = {"type": "whoami", "iam": "I1"}; ws.send(JSON.stringify(message));
+});
+
+ws.on('message', function incoming(data) {
+  console.log(data);
   try {
-    var message = JSON.parse(e.data);
+    var message = JSON.parse(data);
   } catch (e) {
     console.log("Exception: "+e);
     return;
@@ -41,7 +43,7 @@ ifttt_connection.onmessage = function(e) {
         "value":value,
         "created_at":date_string
   };
-}
+});
 
 
 

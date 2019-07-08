@@ -16,12 +16,13 @@ var port = process.env.PORT || 5000
 var reconnectInterval = 5 * 1000 * 60;
 var url = "ws://roberts-websocket.herokuapp.com";
 var ws;
+var ifttt_data = [];
 var connect = function(){
 
     ws = new WebSocket(url);
     ws.reconnectInterval = 60000; // try to reconnect after 10 seconds
 
-    var ifttt_data = [];
+
 
     ws.on('open', function open() {
         console.log("connected"); message = {"type": "whoami", "iam": "I1"}; ws.send(JSON.stringify(message));
@@ -47,6 +48,8 @@ var connect = function(){
             "value":value,
             "created_at":date_string
       };
+      ifttt_data.push(data);
+      console.log(JSON.stringify(ifttt_datat));
     });
 
     ws.on('close', function() {

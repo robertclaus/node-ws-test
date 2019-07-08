@@ -49,7 +49,7 @@ var connect = function(){
             "created_at":date_string
       };
       ifttt_data.push(data);
-      console.log(JSON.stringify(ifttt_datat));
+      console.log(JSON.stringify(ifttt_data));
     });
 
     ws.on('close', function() {

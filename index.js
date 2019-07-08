@@ -35,7 +35,7 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
         console.log(req.body);
         var data = req.body;
 
-        if(data == undefined || data.triggerFields == undefined || data.triggerFields.ifttt_device_id == undefined || data.limit == undefined) {
+        if(data == undefined || data.triggerFields == undefined || data.triggerFields.ifttt_device_id == undefined) {
             res.statusCode = 400;
             var response = {"errors": [{"message":"Missing Field."}]};
             res.set({ 'content-type': 'application/json; charset=utf-8' });
@@ -45,6 +45,12 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
 
         var device_id = data.triggerFields.ifttt_device_id;
         var limit = data.limit;
+
+        if(data.limit ==undefined) {
+            limit = 10;
+        } else {
+            limit = data.limit;
+        }
 
         var response = {
              "data": [

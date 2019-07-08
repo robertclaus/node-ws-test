@@ -13,38 +13,48 @@ var port = process.env.PORT || 5000
 
 
 /**** IFTTT Device Handler ****/
-
+var reconnectInterval = 5 * 1000 * 60;
 var url = "ws://roberts-websocket.herokuapp.com";
-var ws = new WebSocket(url);
+var ws;
+var connect = function(){
 
-var ifttt_data = [];
+    ws = new WebSocket(url);
+    ws.reconnectInterval = 60000; // try to reconnect after 10 seconds
 
-ws.on('open', function open() {
-    console.log("connected"); message = {"type": "whoami", "iam": "I1"}; ws.send(JSON.stringify(message));
-});
+    var ifttt_data = [];
 
-ws.on('message', function incoming(data) {
-  console.log(data);
-  try {
-    var message = JSON.parse(data);
-  } catch (e) {
-    console.log("Exception: "+e);
-    return;
-  }
+    ws.on('open', function open() {
+        console.log("connected"); message = {"type": "whoami", "iam": "I1"}; ws.send(JSON.stringify(message));
+    });
 
-  var date = new Date();
-  var date_string = date.toISOString();
-  var ts = Math.round((new Date()).getTime() / 1000);
+    ws.on('message', function incoming(data) {
+      console.log(data);
+      try {
+        var message = JSON.parse(data);
+      } catch (e) {
+        console.log("Exception: "+e);
+        return;
+      }
 
-  var id = ifttt_data.length;
-  var value = message.payload;
-  var data = {
-        "meta": {"key":id, "id":id, "timestamp":ts},
-        "value":value,
-        "created_at":date_string
-  };
-});
+      var date = new Date();
+      var date_string = date.toISOString();
+      var ts = Math.round((new Date()).getTime() / 1000);
 
+      var id = ifttt_data.length;
+      var value = message.payload;
+      var data = {
+            "meta": {"key":id, "id":id, "timestamp":ts},
+            "value":value,
+            "created_at":date_string
+      };
+    });
+
+    ws.on('close', function() {
+        console.log('socket close');
+        setTimeout(connect, reconnectInterval);
+    });
+};
+connect();
 
 
 

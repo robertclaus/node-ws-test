@@ -30,11 +30,20 @@ app.use('/static', express.static(__dirname + "/"))
 
 app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
     if(!check_header(req, res)) {return;}
+
     try {
+        console.log(req.body);
         var data = req.body;
 
-        var device_id = data.actionFields.ifttt_device_id;
-        var data_value = data.actionFields.data_value;
+        if(data == undefined || data.triggerFields == undefined || data.triggerFields.ifttt_device_id == undefined) {
+            res.statusCode = 400;
+            var response = {"errors": [{"message":"Missing Field."}]};
+            res.set({ 'content-type': 'application/json; charset=utf-8' });
+            res.send(JSON.stringify(response));
+        }
+
+
+        var device_id = data.triggerFields.ifttt_device_id;
 
         var response = {
              "data": [
@@ -61,6 +70,7 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
     }
+
 });
 
 

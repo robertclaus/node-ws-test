@@ -48,7 +48,7 @@ var connect = function(){
             "value":value,
             "created_at":date_string
       };
-      ifttt_data.push(data);
+      ifttt_data.unshift(data);
       console.log(JSON.stringify(ifttt_data));
     });
 
@@ -109,8 +109,10 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
             limit = data.limit;
         }
 
+        var response = {};
+
         if(device_id == "TI1" || device_id == "TI2" || device_id == "TI3") {
-            var response = {
+            response = {
                  "data": [
                     {
                         "meta": {"key":"1", "id":"1", "timestamp":"123456"},
@@ -132,9 +134,10 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
 
             response.data.splice(0,3-limit);
         } else {
-            var response = {"data": ifttt_data};
+            response = {"data": ifttt_data};
         }
 
+        console.log(JSON.stringify(response));
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
     } catch (e) {

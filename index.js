@@ -131,6 +131,8 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
             };
 
             response.data.splice(0,3-limit);
+        } else {
+            var response = {"data": ifttt_data};
         }
 
         res.set({ 'content-type': 'application/json; charset=utf-8' });

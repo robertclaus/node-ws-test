@@ -48,16 +48,16 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
         var response = {
              "data": [
                 {
-                "meta": {"key":"1", "id":"1", "timestamp":"12342"},
-                "recieved_data": {"created_at":"12341", "value":"0"}
+                "meta": {"key":"1", "id":"1", "timestamp":"1383597266"},
+                "value":"0"
                 },
                 {
-                "meta": {"key":"1", "id":"1", "timestamp":"12344"},
-                "recieved_data": {"created_at":"12343", "value":"0"}
+                "meta": {"key":"2", "id":"2", "timestamp":"1383597264"},
+                "value":"0"
                 },
                 {
-                "meta": {"key":"1", "id":"1", "timestamp":"12346"},
-                "recieved_data": {"created_at":"12345", "value":"0"}
+                "meta": {"key":"3", "id":"3", "timestamp":"1383597262"},
+                "value":"0"
                 }
              ]
         };

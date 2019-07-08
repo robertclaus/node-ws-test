@@ -1,7 +1,10 @@
 var WebSocketServer = require("ws").Server
 var http = require("http")
 var express = require("express")
+var bodyParser = require('body-parser')
 var app = express()
+app.use(bodyParser.json());
+
 const uuidv1 = require('uuid/v1');
 var port = process.env.PORT || 5000
 
@@ -28,7 +31,7 @@ app.use('/static', express.static(__dirname + "/"))
 app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
     if(!check_header(req, res)) {return;}
     try {
-        var data = JSON.parse(req.data);
+        var data = req.body;
 
         var device_id = data.actionFields.ifttt_device_id;
         var data_value = data.actionFields.data_value;
@@ -53,6 +56,7 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
     } catch (e) {
+        console.log(e);
         var response = {"errors": ["Bad trigger.", e]};
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
@@ -64,7 +68,8 @@ app.post('/ifttt/v1/actions/send_data', function (req, res) {
     if(!check_header(req, res)) {return;}
 
     try {
-        var data = JSON.parse(req.data);
+        console.log(req.body);
+        var data = req.body;
 
         var device_id = data.actionFields.ifttt_device_id;
         var data_value = data.actionFields.data_value;
@@ -80,6 +85,7 @@ app.post('/ifttt/v1/actions/send_data', function (req, res) {
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));
     } catch (e) {
+        console.log(e);
         var response = {"errors": ["Bad action.", e]};
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         res.send(JSON.stringify(response));

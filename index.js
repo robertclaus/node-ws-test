@@ -48,19 +48,19 @@ app.post('/ifttt/v1/triggers/receive_data', function (req, res) {
         var response = {
              "data": [
                 {
-                    "meta": {"key":"1", "id":"1", "timestamp":"1383597266"},
+                    "meta": {"key":"1", "id":"1", "timestamp":"2013-11-04T09:29:00Z"},
                     "value":"0",
-                    "created_at":1383597265
+                    "created_at":"2013-11-04T09:28:00Z"
                 },
                 {
-                    "meta": {"key":"2", "id":"2", "timestamp":"1383597264"},
+                    "meta": {"key":"2", "id":"2", "timestamp":"2013-11-04T09:27:00Z"},
                     "value":"0",
-                    "created_at":1383597263
+                    "created_at":"2013-11-04T09:26:00Z"
                 },
                 {
-                    "meta": {"key":"3", "id":"3", "timestamp":"1383597262"},
+                    "meta": {"key":"3", "id":"3", "timestamp":"2013-11-04T09:25:00Z"},
                     "value":"0",
-                    "created_at":1383597261
+                    "created_at":"2013-11-04T09:24:00Z"
                 }
              ]
         };

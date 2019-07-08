@@ -13,7 +13,7 @@ var port = process.env.PORT || 5000
 
 
 /**** IFTTT Device Handler ****/
-var reconnectInterval = 5 * 1000 * 60;
+var reconnectInterval = 100;
 var url = "ws://roberts-websocket.herokuapp.com";
 var ws;
 var ifttt_data = [];
